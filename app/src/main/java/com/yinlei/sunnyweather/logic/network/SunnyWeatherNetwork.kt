@@ -11,11 +11,22 @@ import kotlin.coroutines.suspendCoroutine
 // 统一的网络数据源访问入口，对所有网络请求的API进行封装（单例）(协程简化回调地狱)
 object SunnyWeatherNetwork {
 
+
+    // 显示天气信息
+    private val weatherService = ServiceCreator.create(WeatherService::class.java)
+
+    suspend fun getDailyWeather(lng: String, lat: String) = weatherService.getDailyWeather(lng, lat).await()
+
+    suspend fun getRealtimeWeather(lng: String, lat: String) = weatherService.getRealtimeWeather(lng, lat).await()
+
+
+    // 搜索城市数据
     private val placeService = ServiceCreator.create(PlaceService::class.java)
 
     // 发起搜索城市数据请求(立即发送网络请求，当前协程被阻塞，直到数据返回并恢复当前协程的执行，然后将数据再返回上一层)
     suspend fun searchPlaces(query: String) = placeService.searchPlaces(query).await()
 
+    // 协程简化回调
     private suspend fun <T> Call<T>.await(): T {
         return suspendCoroutine { continuation ->
             enqueue(object : Callback<T> {

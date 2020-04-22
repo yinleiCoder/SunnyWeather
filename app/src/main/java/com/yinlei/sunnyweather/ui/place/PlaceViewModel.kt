@@ -26,5 +26,11 @@ class PlaceViewModel : ViewModel(){
         searchLiveData.value = query
     }
 
+    // ——————————————————记录选中的城市
+    fun savePlace(place: Place) = Repository.savePlace(place)
+
+    fun getSavedPlace() = Repository.getSavedPlace()
+
+    fun isPlaceSaved() = Repository.isPlaceSaved()
 
 }
